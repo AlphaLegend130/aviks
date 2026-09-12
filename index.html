@@ -1,29 +1,28 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sweet 16 - Avika Da Birthday! 🥁✨</title>
+  <title>Avika's Sweet 16 | The Original 16</title>
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Editorial Serif & Clean Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@300;400;600;800&family=Rozha+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Alex+Brush&display=swap" rel="stylesheet">
 
   <!-- Canvas Confetti JS -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     :root {
-      --ruby-red: #D90429;
-      --bright-red: #EF233C;
-      --royal-blue: #0A192F;
-      --deep-blue: #020C1B;
-      --electric-blue: #0077B6;
-      --crisp-white: #FFFFFF;
-      --soft-white: #F8F9FA;
-      --glass-bg: rgba(255, 255, 255, 0.08);
-      --glass-border: rgba(255, 255, 255, 0.2);
+      --bg-white: #FCFAFA;
+      --card-white: #FFFFFF;
+      --deep-maroon: #58111A;
+      --dark-wine: #3B0A10;
+      --accent-crimson: #8C1C2B;
+      --text-dark: #1F191A;
+      --text-muted: #6B5E60;
+      --border-maroon: rgba(88, 17, 26, 0.18);
     }
 
     * {
@@ -33,623 +32,485 @@
     }
 
     body {
-      font-family: 'Outfit', sans-serif;
-      background-color: var(--deep-blue);
-      color: var(--crisp-white);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-white);
+      color: var(--text-dark);
       overflow-x: hidden;
       min-height: 100vh;
-      position: relative;
-    }
-
-    /* Ambient Blue & Red Background Glows */
-    .bg-glow {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background: 
-        radial-gradient(circle at 15% 20%, rgba(217, 4, 41, 0.25) 0%, transparent 45%),
-        radial-gradient(circle at 85% 80%, rgba(0, 119, 182, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(10, 25, 47, 0.8) 0%, transparent 80%);
-    }
-
-    /* Traditional Phulkari Pattern Header Strip */
-    .phulkari-strip {
-      height: 12px;
-      width: 100%;
-      background: repeating-linear-gradient(
-        45deg,
-        var(--ruby-red),
-        var(--ruby-red) 15px,
-        var(--crisp-white) 15px,
-        var(--crisp-white) 30px,
-        var(--electric-blue) 30px,
-        var(--electric-blue) 45px
-      );
-      box-shadow: 0 4px 15px rgba(217, 4, 41, 0.5);
-      position: relative;
-      z-index: 10;
+      line-height: 1.6;
     }
 
     /* Entry Overlay */
     #entryOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(2, 12, 27, 0.96);
-      backdrop-filter: blur(15px);
+      background: var(--bg-white);
       z-index: 9999;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 20px;
-      border: 4px solid var(--ruby-red);
+      padding: 24px;
+      border: 12px solid var(--deep-maroon);
     }
 
     #entryOverlay.hidden {
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.8s ease, visibility 0.8s;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+
+    .wax-seal {
+      width: 70px;
+      height: 70px;
+      background-color: var(--deep-maroon);
+      color: var(--bg-white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(88, 17, 26, 0.25);
     }
 
     .enter-btn {
       margin-top: 25px;
-      padding: 18px 45px;
-      font-size: 1.3rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: var(--crisp-white);
-      background: linear-gradient(135deg, var(--ruby-red), var(--bright-red));
-      border: 2px solid var(--crisp-white);
-      border-radius: 50px;
+      padding: 16px 40px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--bg-white);
+      background: var(--deep-maroon);
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
-      box-shadow: 0 10px 35px rgba(217, 4, 41, 0.6);
-      transition: all 0.3s ease;
       text-transform: uppercase;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
 
     .enter-btn:hover {
-      transform: scale(1.08);
-      background: linear-gradient(135deg, var(--bright-red), var(--electric-blue));
-      box-shadow: 0 15px 45px rgba(0, 119, 182, 0.8);
+      background: var(--dark-wine);
+      transform: translateY(-2deg);
     }
 
-    /* Music Control Bar */
+    /* Floating Music Controls */
     .music-player {
       position: fixed;
       bottom: 25px;
       right: 25px;
       z-index: 1000;
-      background: rgba(10, 25, 47, 0.9);
-      border: 2px solid var(--bright-red);
-      padding: 12px 20px;
-      border-radius: 50px;
+      background: var(--card-white);
+      border: 1px solid var(--border-maroon);
+      padding: 10px 18px;
+      border-radius: 40px;
       display: flex;
       align-items: center;
-      gap: 14px;
-      box-shadow: 0 8px 30px rgba(217, 4, 41, 0.4);
-      backdrop-filter: blur(10px);
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
     .music-btn {
-      background: var(--ruby-red);
-      border: 1px solid var(--crisp-white);
-      width: 42px;
-      height: 42px;
+      background: var(--deep-maroon);
+      border: none;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       color: white;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
-      transition: transform 0.2s;
-    }
-
-    .music-btn:hover {
-      transform: scale(1.15);
-      background: var(--electric-blue);
-    }
-
-    .eq-bars {
-      display: flex;
-      gap: 4px;
-      height: 18px;
-      align-items: flex-end;
-    }
-
-    .bar {
-      width: 4px;
-      background: var(--crisp-white);
-      border-radius: 2px;
-      animation: bounce 0.8s infinite ease-in-out alternate;
-    }
-
-    .bar:nth-child(1) { height: 10px; animation-delay: 0.1s; background: var(--bright-red); }
-    .bar:nth-child(2) { height: 18px; animation-delay: 0.3s; background: var(--crisp-white); }
-    .bar:nth-child(3) { height: 8px;  animation-delay: 0.2s; background: var(--electric-blue); }
-    .bar:nth-child(4) { height: 14px; animation-delay: 0.4s; background: var(--bright-red); }
-
-    .paused .bar {
-      animation-play-state: paused;
-      height: 4px;
-    }
-
-    @keyframes bounce {
-      0% { height: 4px; }
-      100% { height: 18px; }
+      font-size: 0.9rem;
     }
 
     /* Layout Container */
     .container {
-      max-width: 1150px;
+      max-width: 1050px;
       margin: 0 auto;
-      padding: 30px 20px;
-      position: relative;
-      z-index: 1;
+      padding: 40px 20px;
     }
 
-    /* Hero Section */
+    /* Header & Hero */
     .hero {
       text-align: center;
-      padding: 40px 0;
+      padding: 30px 0 50px;
     }
 
-    .badge {
+    .tvd-tag {
+      font-size: 0.85rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent-crimson);
+      font-weight: 700;
+      margin-bottom: 12px;
       display: inline-block;
-      padding: 10px 25px;
-      background: rgba(217, 4, 41, 0.2);
-      border: 2px solid var(--bright-red);
-      color: var(--crisp-white);
-      border-radius: 30px;
-      font-size: 0.95rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-weight: 800;
-      margin-bottom: 20px;
-      box-shadow: 0 0 20px rgba(239, 35, 60, 0.4);
     }
 
-    .title {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(2.6rem, 7vw, 5.2rem);
-      font-weight: 900;
+    .main-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6vw, 4.8rem);
+      font-weight: 700;
+      color: var(--dark-wine);
       line-height: 1.1;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #FFFFFF 20%, var(--bright-red) 60%, var(--electric-blue) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       margin-bottom: 15px;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    .punjabi-subtitle {
-      font-family: 'Rozha One', serif;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      color: var(--crisp-white);
-      text-shadow: 0 0 12px var(--bright-red);
+    .script-sub {
+      font-family: 'Alex Brush', cursive;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--accent-crimson);
       margin-bottom: 20px;
     }
 
-    /* Photos Section (Red & White Polaroids) */
+    /* Visual Phulkari Geometric Pattern Divider (No Text) */
+    .phulkari-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin: 40px 0;
+    }
+
+    .phulkari-line {
+      height: 1px;
+      background: var(--border-maroon);
+      flex: 1;
+    }
+
+    .phulkari-pattern {
+      display: flex;
+      gap: 6px;
+    }
+
+    .phulkari-diamond {
+      width: 12px;
+      height: 12px;
+      background-color: var(--deep-maroon);
+      transform: rotate(45deg);
+    }
+
+    .phulkari-diamond.outline {
+      background-color: transparent;
+      border: 2px solid var(--accent-crimson);
+    }
+
+    /* Photos Section */
     .section-title {
+      font-family: 'Cormorant Garamond', serif;
       text-align: center;
-      font-size: 2.3rem;
-      font-family: 'Cinzel', serif;
-      margin: 60px 0 35px;
-      color: var(--crisp-white);
-      text-shadow: 0 0 10px var(--electric-blue);
-      letter-spacing: 2px;
+      font-size: 2.2rem;
+      color: var(--dark-wine);
+      margin-bottom: 35px;
     }
 
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 30px;
-      padding: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 25px;
     }
 
-    .polaroid {
-      background: var(--crisp-white);
-      padding: 15px 15px 25px 15px;
-      border-radius: 12px;
-      border: 3px solid var(--ruby-red);
-      box-shadow: 0 15px 35px rgba(217, 4, 41, 0.25);
-      transform: rotate(calc(var(--rotation, 0) * 1deg));
-      transition: all 0.4s ease;
-      color: var(--royal-blue);
+    .photo-card {
+      background: var(--card-white);
+      padding: 12px;
+      border: 1px solid var(--border-maroon);
+      box-shadow: 0 4px 15px rgba(88, 17, 26, 0.06);
       text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-card:hover {
+      transform: translateY(-5deg);
+      border-color: var(--deep-maroon);
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      margin-bottom: 12px;
+    }
+
+    .photo-caption {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--dark-wine);
+      letter-spacing: 0.5px;
+    }
+
+    /* Interactive TVD / Celebration Card */
+    .tvd-card {
+      background: var(--card-white);
+      border: 2px solid var(--deep-maroon);
+      padding: 40px 25px;
+      text-align: center;
+      margin: 60px 0;
       position: relative;
     }
 
-    .polaroid:nth-child(1) { --rotation: -3; }
-    .polaroid:nth-child(2) { --rotation: 3; }
-    .polaroid:nth-child(3) { --rotation: -2; }
-    .polaroid:nth-child(4) { --rotation: 4; }
-
-    .polaroid:hover {
-      transform: scale(1.08) rotate(0deg);
-      box-shadow: 0 20px 45px rgba(0, 119, 182, 0.5);
-      border-color: var(--electric-blue);
-      z-index: 10;
-    }
-
-    .polaroid img {
-      width: 100%;
-      height: 270px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid rgba(0,0,0,0.1);
+    .tvd-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--dark-wine);
       margin-bottom: 15px;
     }
 
-    .polaroid-caption {
-      font-weight: 800;
-      font-size: 1.2rem;
-      color: var(--ruby-red);
+    .action-btn {
+      padding: 14px 32px;
+      background: var(--deep-maroon);
+      color: var(--bg-white);
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* Bhangra & Dhol Celebration Card */
-    .bhangra-card {
-      background: linear-gradient(135deg, rgba(10, 25, 47, 0.9), rgba(217, 4, 41, 0.2));
-      border: 2px solid var(--bright-red);
-      border-radius: 24px;
-      padding: 40px 20px;
-      text-align: center;
-      margin: 60px 0;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
-    }
-
-    .dhol-btn {
-      font-size: 4rem;
       cursor: pointer;
-      display: inline-block;
-      transition: transform 0.3s ease;
-      user-select: none;
-      filter: drop-shadow(0 0 10px var(--bright-red));
+      margin-top: 15px;
+      transition: background 0.3s;
     }
 
-    .dhol-btn:hover {
-      transform: scale(1.25) rotate(-10deg);
-    }
-
-    .celebrate-btn {
-      margin-top: 25px;
-      padding: 15px 35px;
-      border-radius: 50px;
-      border: 2px solid var(--crisp-white);
-      background: var(--ruby-red);
-      color: var(--crisp-white);
-      font-size: 1.1rem;
-      font-weight: 800;
-      cursor: pointer;
-      text-transform: uppercase;
-      box-shadow: 0 5px 25px rgba(217, 4, 41, 0.5);
-      transition: all 0.3s;
-    }
-
-    .celebrate-btn:hover {
-      background: var(--electric-blue);
-      border-color: var(--crisp-white);
-      transform: translateY(-3deg);
+    .action-btn:hover {
+      background: var(--dark-wine);
     }
 
     /* Wishes Wall */
-    .wishes-board {
-      background: rgba(10, 25, 47, 0.85);
-      border: 2px solid var(--electric-blue);
-      border-radius: 24px;
+    .wishes-section {
+      background: var(--card-white);
+      border: 1px solid var(--border-maroon);
       padding: 35px;
-      backdrop-filter: blur(10px);
     }
 
-    .wish-input-group {
+    .wish-form {
       display: flex;
       flex-direction: column;
       gap: 15px;
       margin-bottom: 30px;
     }
 
-    .wish-input-group input, 
-    .wish-input-group textarea {
-      background: rgba(2, 12, 27, 0.8);
-      border: 1px solid var(--glass-border);
-      padding: 16px;
-      border-radius: 12px;
-      color: #fff;
+    .wish-form input,
+    .wish-form textarea {
+      padding: 14px;
+      border: 1px solid var(--border-maroon);
+      background: var(--bg-white);
       font-family: inherit;
-      font-size: 1rem;
+      color: var(--text-dark);
       outline: none;
-      transition: border 0.3s;
     }
 
-    .wish-input-group input:focus, 
-    .wish-input-group textarea:focus {
-      border-color: var(--bright-red);
-      box-shadow: 0 0 10px rgba(239, 35, 60, 0.3);
-    }
-
-    .send-btn {
-      padding: 15px 30px;
-      background: linear-gradient(135deg, var(--bright-red), var(--ruby-red));
-      color: var(--crisp-white);
-      border: 1px solid var(--crisp-white);
-      border-radius: 12px;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      align-self: flex-start;
-      text-transform: uppercase;
-      transition: 0.3s;
-    }
-
-    .send-btn:hover {
-      background: linear-gradient(135deg, var(--electric-blue), var(--royal-blue));
-      transform: translateY(-2deg);
+    .wish-form input:focus,
+    .wish-form textarea:focus {
+      border-color: var(--deep-maroon);
     }
 
     .wishes-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
     }
 
     .wish-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-left: 4px solid var(--bright-red);
-      padding: 20px;
-      border-radius: 14px;
+      background: var(--bg-white);
+      border-left: 3px solid var(--deep-maroon);
+      padding: 18px;
     }
 
     .wish-card h4 {
-      color: var(--crisp-white);
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-      text-transform: uppercase;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: var(--dark-wine);
+      margin-bottom: 6px;
     }
 
     .wish-card p {
-      font-size: 0.95rem;
-      color: rgba(255, 255, 255, 0.85);
-      line-height: 1.5;
+      font-size: 0.9rem;
+      color: var(--text-muted);
     }
 
-    /* Footer */
     footer {
       text-align: center;
       padding: 40px 0 20px;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 600px) {
-      .gallery {
-        grid-template-columns: 1fr;
-      }
-      .music-player {
-        bottom: 15px;
-        right: 15px;
-        left: 15px;
-        justify-content: space-between;
-      }
-      .send-btn {
-        width: 100%;
-      }
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Phulkari Pattern Strip -->
-  <div class="phulkari-strip"></div>
-
-  <!-- Ambient Glow Background -->
-  <div class="bg-glow"></div>
-
-  <!-- Entry Screen Overlay -->
+  <!-- Entry Overlay -->
   <div id="entryOverlay">
-    <div class="badge">Sweet 16 Celebration</div>
-    <h1 style="font-family: 'Cinzel', serif; font-size: 2.8rem; margin-top: 10px; color: var(--crisp-white);">
-      AVIKA DA BIRTHDAY! 🎉
+    <div class="wax-seal">16</div>
+    <div class="tvd-tag">Welcome to Mystic Falls</div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; color: var(--dark-wine);">
+      Avika's Sweet 16th Birthday
     </h1>
-    <p class="punjabi-subtitle" style="font-size: 1.8rem; margin-top: 5px;">
-      ਸਵੀਟ 16 ਦੀਆਂ ਲੱਖ ਲੱਖ ਵਧਾਈਆਂ! 🎂
+    <p style="color: var(--text-muted); margin-top: 8px; max-width: 400px; font-size: 0.95rem;">
+      You have been compelled to enter the party.
     </p>
-    <p style="color: rgba(255, 255, 255, 0.8); margin-top: 10px; max-width: 450px;">
-      Press the button to play Karan Aujla's beat and turn on the Bhangra lights! 🥁🔥
-    </p>
-    <button class="enter-btn" onclick="startCelebration()">Balle Balle! Enter Party 🥁🎉</button>
+    <button class="enter-btn" onclick="startCelebration()">Enter Celebration</button>
   </div>
 
-  <!-- Background Music Track -->
+  <!-- Background Music -->
   <audio id="bgMusic" src="Boyfriend - Karan Aujla.mp3" loop></audio>
 
-  <!-- Persistent Floating Music Controls -->
-  <div class="music-player paused" id="musicPlayer">
+  <!-- Music Controls -->
+  <div class="music-player">
     <button class="music-btn" onclick="toggleMusic()" id="musicToggleBtn">▶</button>
-    <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">
-      <span style="color: var(--bright-red);">🎵 Track:</span> Boyfriend - Karan Aujla
-    </div>
-    <div class="eq-bars">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
+    <span style="font-size: 0.8rem; font-weight: 600; color: var(--dark-wine);">
+      Karan Aujla - Boyfriend
+    </span>
   </div>
 
   <!-- Main Content -->
   <div class="container">
-    
+
     <!-- Hero Section -->
     <header class="hero">
-      <div class="badge">Sweet Sixteen • Red & Royal Blue Edition</div>
-      <h1 class="title">HAPPY 16TH BIRTHDAY<br>AVIKA! 👑</h1>
-      <div class="punjabi-subtitle">ਲੱਖ ਲੱਖ ਵਧਾਈਆਂ! 🌹✨</div>
-      <p style="max-width: 650px; margin: 0 auto; color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; line-height: 1.7;">
-        Wishing our queen <b>Avika</b> the most stylish, fun-filled, and unforgettable 16th birthday! May your year ahead be full of endless happiness, hit beats, high swag, and bright moments! 💃🔥
+      <span class="tvd-tag">The Mikaelson Original • Chapter 16</span>
+      <h1 class="main-title">Happy 16th Birthday, Avika!</h1>
+      <div class="script-sub">Sweet Sixteen & Feeling Epic</div>
+      <p style="max-width: 600px; margin: 0 auto; color: var(--text-muted); font-size: 0.95rem;">
+        To my favorite cousin sister — welcome to your sweet 16! May your year ahead be full of epic memories, endless laughs, and iconic vibes.
       </p>
     </header>
 
+    <!-- Visual Phulkari Pattern Divider (No Punjabi Text) -->
+    <div class="phulkari-divider">
+      <div class="phulkari-line"></div>
+      <div class="phulkari-pattern">
+        <div class="phulkari-diamond"></div>
+        <div class="phulkari-diamond outline"></div>
+        <div class="phulkari-diamond"></div>
+      </div>
+      <div class="phulkari-line"></div>
+    </div>
+
     <!-- Photo Gallery -->
-    <h2 class="section-title">✨ The Avika Gallery ✨</h2>
+    <h2 class="section-title">The Birthday Portrait Wall</h2>
     <div class="gallery">
-      <div class="polaroid">
+      <div class="photo-card">
         <img src="photo1.jpg" alt="Avika Portrait">
-        <div class="polaroid-caption">Pind Di Queen 👑</div>
+        <div class="photo-caption">The Main Character</div>
       </div>
-      <div class="polaroid">
-        <img src="photo2.jpg" alt="Avika Selfie">
-        <div class="polaroid-caption">Nakhra 100/100 🔥</div>
+      <div class="photo-card">
+        <img src="photo2.jpg" alt="Avika Close-up">
+        <div class="photo-caption">Elena Gilbert Core</div>
       </div>
-      <div class="polaroid">
+      <div class="photo-card">
         <img src="photo3.jpg" alt="Avika Skincare">
-        <div class="polaroid-caption">Glow Up Queen 🧖‍♀️</div>
+        <div class="photo-caption">Vampire Glow</div>
       </div>
-      <div class="polaroid">
-        <img src="photo4.jpg" alt="Avika Chilling">
-        <div class="polaroid-caption">Full Swag Vibe ✨</div>
+      <div class="photo-card">
+        <img src="photo4.jpg" alt="Avika Casual">
+        <div class="photo-caption">Mystic Falls Swag</div>
       </div>
     </div>
 
-    <!-- Interactive Bhangra Beat & Cake Section -->
-    <section class="bhangra-card">
-      <h2 style="font-family: 'Cinzel', serif; font-size: 2.2rem; margin-bottom: 10px;">
-        Beat Da Dhol & Blow Candles! 🎂🥁
-      </h2>
-      <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 20px; font-size: 1.05rem;">
-        Click the Dhol below to launch red, white & blue celebratory fireworks!
+    <!-- TVD & Celebration Interactive Card -->
+    <section class="tvd-card">
+      <div class="tvd-quote">"I was feeling epic." — Stefan Salvatore</div>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Click below to compel maroon & crimson confetti fireworks for Avika's 16th!
       </p>
-      <div class="dhol-btn" onclick="bhangraFireworks()">🥁</div>
-      <div>
-        <button class="celebrate-btn" onclick="bhangraFireworks()">Chak De Phatte! 🎉 Red & White Fireworks</button>
-      </div>
+      <button class="action-btn" onclick="triggerConfetti()">Pop Crimson Confetti 🌹</button>
     </section>
 
-    <!-- Wishes Wall Section -->
-    <section class="wishes-board">
-      <h2 style="font-family: 'Cinzel', serif; font-size: 2rem; margin-bottom: 25px; color: var(--crisp-white);">
-        Shava Shava Wishes Wall 💌
-      </h2>
-      <div class="wish-input-group">
+    <!-- Visual Phulkari Divider -->
+    <div class="phulkari-divider">
+      <div class="phulkari-line"></div>
+      <div class="phulkari-pattern">
+        <div class="phulkari-diamond outline"></div>
+        <div class="phulkari-diamond"></div>
+        <div class="phulkari-diamond outline"></div>
+      </div>
+      <div class="phulkari-line"></div>
+    </div>
+
+    <!-- Wishes Section -->
+    <section class="wishes-section">
+      <h2 class="section-title" style="margin-bottom: 20px; text-align: left;">Guest Book & Birthday Wishes</h2>
+      <div class="wish-form">
         <input type="text" id="senderName" placeholder="Your Name">
-        <textarea id="wishMessage" rows="3" placeholder="Write your birthday message/boliyan for Avika..."></textarea>
-        <button class="send-btn" onclick="addWish()">Post Wish ✨</button>
+        <textarea id="wishMessage" rows="3" placeholder="Write a sweet 16 wish for Avika..."></textarea>
+        <button class="action-btn" style="align-self: flex-start;" onclick="addWish()">Post Wish</button>
       </div>
 
       <div class="wishes-grid" id="wishesContainer">
         <div class="wish-card">
-          <h4>Karan Aujla Beat Squad 🎧</h4>
-          <p>"Ni maaye dil lai gaya!" Happy Sweet 16 Avika! Keep dancing and living life king size! 🔥🎉</p>
+          <h4>Cousin Squad 🩸</h4>
+          <p>Happy 16th Avika! Stay iconic, keep slaying, and have the best year ever!</p>
         </div>
         <div class="wish-card">
-          <h4>Besties Gang 💖</h4>
-          <p>Happy 16th to the realest! May your year be as bright as red phulkari and full of fun memories! 🌹✨</p>
+          <h4>Salvatore Board 🌹</h4>
+          <p>16 looks epic on you. Hope your birthday is filled with fun and cake!</p>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
     <footer>
-      <p>Created with ❤️ to celebrate Avika turning 16 | Sweet Sixteen Bhangra Edition 🥁</p>
+      <p>Made with ❤️ for Cousin Avika • Sweet 16th Birthday</p>
     </footer>
 
   </div>
 
   <script>
     const audio = document.getElementById('bgMusic');
-    const player = document.getElementById('musicPlayer');
     const toggleBtn = document.getElementById('musicToggleBtn');
 
     function startCelebration() {
-      // Hide entry overlay
       document.getElementById('entryOverlay').classList.add('hidden');
-
-      // Play audio
       audio.play().then(() => {
-        player.classList.remove('paused');
         toggleBtn.innerText = '❚❚';
-      }).catch(err => {
-        console.log("Audio autoplay restricted:", err);
-      });
-
-      // Fire initial themed confetti
-      bhangraFireworks();
+      }).catch(err => console.log(err));
+      triggerConfetti();
     }
 
     function toggleMusic() {
       if (audio.paused) {
         audio.play();
-        player.classList.remove('paused');
         toggleBtn.innerText = '❚❚';
       } else {
         audio.pause();
-        player.classList.add('paused');
         toggleBtn.innerText = '▶';
       }
     }
 
-    // Custom Red, White, & Blue Confetti Cannon
-    function bhangraFireworks() {
-      var count = 250;
-      var colors = ['#D90429', '#FFFFFF', '#0077B6', '#EF233C'];
-
-      function fire(particleRatio, opts) {
-        confetti(Object.assign({
-          colors: colors,
-          origin: { y: 0.65 }
-        }, opts, {
-          particleCount: Math.floor(count * particleRatio)
-        }));
-      }
-
-      fire(0.25, { spread: 30, startVelocity: 60 });
-      fire(0.2, { spread: 70 });
-      fire(0.35, { spread: 110, decay: 0.9, scalar: 0.9 });
-      fire(0.1, { spread: 130, startVelocity: 30, decay: 0.92, scalar: 1.2 });
-      fire(0.15, { spread: 140, startVelocity: 50 });
+    function triggerConfetti() {
+      confetti({
+        particleCount: 120,
+        spread: 70,
+        colors: ['#58111A', '#8C1C2B', '#FFFFFF', '#3B0A10'],
+        origin: { y: 0.6 }
+      });
     }
 
     function addWish() {
-      const nameInput = document.getElementById('senderName');
-      const messageInput = document.getElementById('wishMessage');
-
-      const name = nameInput.value.trim();
-      const message = messageInput.value.trim();
+      const name = document.getElementById('senderName').value.trim();
+      const message = document.getElementById('wishMessage').value.trim();
 
       if (!name || !message) {
-        alert('Please enter your name and message to post your wish!');
+        alert('Please fill out both your name and message.');
         return;
       }
 
       const container = document.getElementById('wishesContainer');
       const card = document.createElement('div');
       card.className = 'wish-card';
-      card.innerHTML = `<h4>${escapeHTML(name)} 🌹</h4><p>${escapeHTML(message)}</p>`;
-
+      card.innerHTML = `<h4>${escapeHTML(name)}</h4><p>${escapeHTML(message)}</p>`;
       container.prepend(card);
 
-      nameInput.value = '';
-      messageInput.value = '';
-
-      bhangraFireworks();
+      document.getElementById('senderName').value = '';
+      document.getElementById('wishMessage').value = '';
+      triggerConfetti();
     }
 
     function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, 
-        tag => ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          "'": '&#39;',
-          '"': '&quot;'
-        }[tag] || tag)
-      );
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag] || tag));
     }
   </script>
 </body>
