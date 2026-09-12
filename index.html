@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy 16th Birthday Avika! ✨</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,600&family=Sacramento&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #ff4081;
+      --secondary: #7c4dff;
+      --accent: #ffd700;
+      --bg-dark: #0b0712;
+      --card-bg: rgba(255, 255, 255, 0.07);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --text-light: #ffffff;
+      --text-dim: rgba(255, 255, 255, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Ambient Background Glows */
+    .glow-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 64, 129, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(124, 77, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 60%);
+    }
+
+    /* Entry Overlay for Autoplay Bypass */
+    #entryOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 7, 18, 0.95);
+      backdrop-filter: blur(15px);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    #entryOverlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .enter-btn {
+      margin-top: 30px;
+      padding: 16px 42px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(255, 64, 129, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .enter-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(255, 64, 129, 0.6);
+    }
+
+    /* Music Player Bar */
+    .music-player {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 1000;
+      background: rgba(20, 15, 30, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      padding: 10px 18px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .music-btn {
+      background: var(--primary);
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .music-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .eq-bars {
+      display: flex;
+      gap: 3px;
+      height: 15px;
+      align-items: flex-end;
+    }
+
+    .bar {
+      width: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: bounce 1s infinite ease-in-out alternate;
+    }
+
+    .bar:nth-child(1) { height: 10px; animation-delay: 0.1s; }
+    .bar:nth-child(2) { height: 15px; animation-delay: 0.3s; }
+    .bar:nth-child(3) { height: 8px;  animation-delay: 0.2s; }
+    .bar:nth-child(4) { height: 12px; animation-delay: 0.4s; }
+
+    .paused .bar {
+      animation-play-state: paused;
+      height: 4px;
+    }
+
+    @keyframes bounce {
+      0% { height: 4px; }
+      100% { height: 16px; }
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(255, 215, 0, 0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 30px;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4.8rem);
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 30%, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 15px;
+    }
+
+    .subtitle {
+      font-family: 'Sacramento', cursive;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      color: var(--primary);
+      margin-bottom: 25px;
+    }
+
+    /* Photos Section (Polaroid Style) */
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-family: 'Playfair Display', serif;
+      margin: 60px 0 30px;
+      position: relative;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 25px;
+      padding: 10px;
+    }
+
+    .polaroid {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px 15px 25px 15px;
+      border-radius: 8px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      transform: rotate(calc(var(--rotation, 0) * 1deg));
+      transition: transform 0.4s ease, box-shadow 0.4s ease, z-index 0.4s;
+      color: #333;
+      text-align: center;
+      position: relative;
+    }
+
+    .polaroid:nth-child(1) { --rotation: -3; }
+    .polaroid:nth-child(2) { --rotation: 2; }
+    .polaroid:nth-child(3) { --rotation: -2; }
+    .polaroid:nth-child(4) { --rotation: 4; }
+
+    .polaroid:hover {
+      transform: scale(1.06) rotate(0deg);
+      box-shadow: 0 20px 45px rgba(255, 64, 129, 0.3);
+      z-index: 10;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+
+    .polaroid-caption {
+      font-family: 'Sacramento', cursive;
+      font-size: 1.6rem;
+      color: #222;
+      font-weight: 600;
+    }
+
+    /* Cake / Make a Wish Interactive Section */
+    .cake-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px 20px;
+      text-align: center;
+      margin: 60px 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .cake-icon {
+      font-size: 4rem;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.3s;
+      user-select: none;
+    }
+
+    .cake-icon:hover {
+      transform: scale(1.15) rotate(5deg);
+    }
+
+    .wish-btn {
+      margin-top: 20px;
+      padding: 12px 30px;
+      border-radius: 30px;
+      border: 1px solid var(--accent);
+      background: rgba(255, 215, 0, 0.1);
+      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .wish-btn:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    /* Wishes Board */
+    .wishes-board {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+    }
+
+    .wish-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .wish-input-group input, 
+    .wish-input-group textarea {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      padding: 14px;
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .wish-input-group input:focus, 
+    .wish-input-group textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .send-btn {
+      padding: 12px 25px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: 0.3s;
+    }
+
+    .send-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2deg);
+    }
+
+    .wishes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .wish-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 18px;
+      border-radius: 16px;
+    }
+
+    .wish-card h4 {
+      color: var(--accent);
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .wish-card p {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+      .music-player {
+        bottom: 15px;
+        right: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Glow Background -->
+  <div class="glow-bg"></div>
+
+  <!-- Entry Screen Overlay -->
+  <div id="entryOverlay">
+    <div class="badge">Sweet Sixteen</div>
+    <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-top: 10px;">Welcome to Avika's Birthday Celebration ✨</h1>
+    <p style="color: var(--text-dim); margin-top: 10px; max-width: 400px;">Click below to launch the celebration with music and lights!</p>
+    <button class="enter-btn" onclick="startCelebration()">Enter Party 🎂 🎉</button>
+  </div>
+
+  <!-- Audio Element -->
+  <!-- Save your audio file as music.mp3 in the same directory -->
+  <audio id="bgMusic" src="music.mp3" loop></audio>
+
+  <!-- Persistent Floating Music Controls -->
+  <div class="music-player paused" id="musicPlayer">
+    <button class="music-btn" onclick="toggleMusic()" id="musicToggleBtn">▶</button>
+    <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-dim);">
+      Playing: <span style="color: #fff;">Dil Lai Gaya</span>
+    </div>
+    <div class="eq-bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="badge">Official 16th Birthday Website</div>
+      <h1 class="title">Happy 16th Birthday,<br>Avika! 👑</h1>
+      <div class="subtitle">Sixteen & Fabulous ✨</div>
+      <p style="max-width: 600px; margin: 0 auto; color: var(--text-dim); line-height: 1.6;">
+        May your 16th year be filled with endless laughter, memorable moments, glowing skin, and all the happiness in the world! 💖
+      </p>
+    </header>
+
+    <!-- Photo Gallery -->
+    <h2 class="section-title">The Avika Vibe Wall 📸</h2>
+    <div class="gallery">
+      <div class="polaroid">
+        <img src="photo1.jpg" alt="Avika Portrait">
+        <div class="polaroid-caption">The Main Character ✨</div>
+      </div>
+      <div class="polaroid">
+        <img src="photo2.jpg" alt="Avika Funny Selfie">
+        <div class="polaroid-caption">Mood: 👁️👄👁️</div>
+      </div>
+      <div class="polaroid">
+        <img src="photo3.jpg" alt="Avika Skincare">
+        <div class="polaroid-caption">Self-Care Queen 🧖‍♀️</div>
+      </div>
+      <div class="polaroid">
+        <img src="photo4.jpg" alt="Avika Chilling">
+        <div class="polaroid-caption">Unfiltered & Chill 💖</div>
+      </div>
+    </div>
+
+    <!-- Virtual Birthday Cake Section -->
+    <section class="cake-section">
+      <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Blow the Candles! 🎂</h2>
+      <p style="color: var(--text-dim); margin-bottom: 20px;">Click the cake to make a wish and trigger confetti fireworks!</p>
+      <div class="cake-icon" onclick="makeAWish()">🎂</div>
+      <div>
+        <button class="wish-btn" onclick="makeAWish()">Pop Confetti 🎉</button>
+      </div>
+    </section>
+
+    <!-- Wishes Wall Section -->
+    <section class="wishes-board">
+      <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 20px;">Leave a Birthday Wish 💌</h2>
+      <div class="wish-input-group">
+        <input type="text" id="senderName" placeholder="Your Name">
+        <textarea id="wishMessage" rows="3" placeholder="Write your birthday message for Avika..."></textarea>
+        <button class="send-btn" onclick="addWish()">Post Wish ✨</button>
+      </div>
+
+      <div class="wishes-grid" id="wishesContainer">
+        <div class="wish-card">
+          <h4>Bestie 💖</h4>
+          <p>Happy 16th Avika! Stay iconic, fun, and keep shining always! ✨🎉</p>
+        </div>
+        <div class="wish-card">
+          <h4>Family 🌟</h4>
+          <p>Wishing you the happiest Sweet 16! So proud of the amazing person you are becoming. 🎂🎈</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>Created with ❤️ to celebrate Avika turning 16!</p>
+    </footer>
+
+  </div>
+
+  <script>
+    const audio = document.getElementById('bgMusic');
+    const player = document.getElementById('musicPlayer');
+    const toggleBtn = document.getElementById('musicToggleBtn');
+
+    function startCelebration() {
+      // Hide entry overlay
+      document.getElementById('entryOverlay').classList.add('hidden');
+
+      // Play background audio
+      audio.play().then(() => {
+        player.classList.remove('paused');
+        toggleBtn.innerText = '❚❚';
+      }).catch(err => {
+        console.log("Audio play blocked:", err);
+      });
+
+      // Fire confetti burst
+      fireConfetti();
+    }
+
+    function toggleMusic() {
+      if (audio.paused) {
+        audio.play();
+        player.classList.remove('paused');
+        toggleBtn.innerText = '❚❚';
+      } else {
+        audio.pause();
+        player.classList.add('paused');
+        toggleBtn.innerText = '▶';
+      }
+    }
+
+    function fireConfetti() {
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+    }
+
+    function makeAWish() {
+      // Trigger multi-stage confetti explosion
+      var count = 200;
+      var defaults = { origin: { y: 0.7 } };
+
+      function fire(particleRatio, opts) {
+        confetti(Object.assign({}, defaults, opts, {
+          particleCount: Math.floor(count * particleRatio)
+        }));
+      }
+
+      fire(0.25, { spread: 26, startVelocity: 55 });
+      fire(0.2, { spread: 60 });
+      fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+      fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+      fire(0.1, { spread: 120, startVelocity: 45 });
+    }
+
+    function addWish() {
+      const nameInput = document.getElementById('senderName');
+      const messageInput = document.getElementById('wishMessage');
+
+      const name = nameInput.value.trim();
+      const message = messageInput.value.trim();
+
+      if (!name || !message) {
+        alert('Please enter both your name and a birthday message!');
+        return;
+      }
+
+      const wishesContainer = document.getElementById('wishesContainer');
+      const newCard = document.createElement('div');
+      newCard.className = 'wish-card';
+      newCard.innerHTML = `<h4>${escapeHTML(name)} ✨</h4><p>${escapeHTML(message)}</p>`;
+
+      wishesContainer.prepend(newCard);
+
+      nameInput.value = '';
+      messageInput.value = '';
+
+      fireConfetti();
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+  </script>
+</body>
+</html>
+
