@@ -145,11 +145,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Make addFirebaseWish globally available
+    // Make addFirebaseWish globally available and resilient
     window.addFirebaseWish = async function() {
       const input = document.getElementById('wishInput');
+      if (!input) return;
       const text = input.value.trim();
-      if (!text) return;
+      if (!text) {
+        alert("Please type a message before pinning!");
+        return;
+      }
 
       const randomRot = (Math.random() * 10) - 5;
       try {
@@ -161,25 +165,33 @@
         input.value = '';
         confetti({ particleCount: 20, spread: 30 });
       } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error adding document to Firebase: ", e);
+        alert("Could not pin note. Check your Firestore Security Rules or browser console.");
       }
     };
 
     // Real-time listener for incoming notes from anyone anywhere
     document.addEventListener("DOMContentLoaded", () => {
-      const q = query(collection(db, "wishes"), orderBy("timestamp", "asc"));
-      onSnapshot(q, (snapshot) => {
-        const corkboard = document.getElementById('corkboard');
-        corkboard.innerHTML = ''; // Clear board and re-render live list
-        snapshot.forEach((doc) => {
-          const wish = doc.data();
-          const note = document.createElement('div');
-          note.className = 'sticky-note';
-          note.style.transform = `rotate(${wish.rotation}deg)`;
-          note.innerHTML = `<div class="sticky-pin"></div>${wish.text}`;
-          corkboard.appendChild(note);
+      try {
+        const q = query(collection(db, "wishes"), orderBy("timestamp", "asc"));
+        onSnapshot(q, (snapshot) => {
+          const corkboard = document.getElementById('corkboard');
+          if (!corkboard) return;
+          corkboard.innerHTML = ''; // Clear board and re-render live list
+          snapshot.forEach((doc) => {
+            const wish = doc.data();
+            const note = document.createElement('div');
+            note.className = 'sticky-note';
+            note.style.transform = `rotate(${wish.rotation || 0}deg)`;
+            note.innerHTML = `<div class="sticky-pin"></div>${wish.text}`;
+            corkboard.appendChild(note);
+          });
+        }, (error) => {
+          console.error("Firestore snapshot error: ", error);
         });
-      });
+      } catch (err) {
+        console.error("Initialization error:", err);
+      }
     });
   </script>
 </head>
