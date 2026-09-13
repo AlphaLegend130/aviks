@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Vampire Diaries: Avika's Sweet 16</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-white: #FFFFFF;
+      --card-white: #FAFAFA;
+      --maroon: #6B0D18;
+      --dark-maroon: #4A000B;
+      --deep-crimson: #8C1C2B;
+      --text-dark: #1A1A1A;
+      --text-muted: #555555;
+      --border-light: rgba(107, 13, 24, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Distributed Interactive Background Layer */
+    .bg-food-layer {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+
+    .chole-bhatura-item {
+      position: absolute; opacity: 0.15; width: 85px; height: 85px; cursor: pointer; pointer-events: auto;
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .chole-bhatura-item:hover, .chole-bhatura-item:active {
+      opacity: 1; transform: scale(1.35) rotate(12deg); filter: drop-shadow(0 6px 12px rgba(107, 13, 24, 0.25));
+    }
+
+    .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+    header { text-align: center; margin-bottom: 40px; }
+    .vd-header-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; letter-spacing: 3px; text-transform: uppercase; color: var(--maroon); font-weight: 700; margin-bottom: 8px; }
+    .main-heading { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; color: var(--dark-maroon); line-height: 1.1; }
+    .sub-heading { font-size: 1.1rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
+
+    /* Interactive Photobooth Strip */
+    .photobooth-section { display: flex; justify-content: center; margin: 40px 0 60px; }
+    .photobooth-strip {
+      background: #FFFFFF; border: 2px solid var(--maroon); padding: 16px 16px 24px;
+      box-shadow: 0 10px 30px rgba(107, 13, 24, 0.12); max-width: 320px; width: 100%; display: flex; flex-direction: column; gap: 16px; position: relative;
+    }
+    .photobooth-photo {
+      width: 100%; height: 240px; object-fit: cover; border: 1px solid rgba(0,0,0,0.1); background-color: #eee;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease; cursor: pointer;
+    }
+    .photobooth-photo:hover {
+      transform: scale(1.08) rotate(3deg); box-shadow: 0 12px 25px rgba(0,0,0,0.2); z-index: 10; position: relative;
+    }
+    .photobooth-photo:nth-child(even):hover { transform: scale(1.08) rotate(-3deg); }
+    .photobooth-footer { text-align: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 2px; color: var(--maroon); padding-top: 8px; }
+
+    /* Game Card Container */
+    .game-card { background: var(--bg-white); border: 2px solid var(--maroon); border-radius: 12px; padding: 30px 24px; box-shadow: 0 8px 25px rgba(107, 13, 24, 0.08); text-align: center; margin-bottom: 40px; }
+    .game-title { font-size: 1.5rem; font-weight: 700; color: var(--dark-maroon); margin-bottom: 8px; }
+    .game-instruction { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; }
+
+    /* STAGE 0: Trivia Gatekeeper */
+    .trivia-container { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .trivia-box { background: var(--card-white); border: 1px solid var(--border-light); border-radius: 8px; padding: 20px; width: 100%; max-width: 500px; text-align: left; }
+    .trivia-question { font-weight: 700; color: var(--dark-maroon); margin-bottom: 12px; font-size: 1.05rem; }
+    .trivia-options { display: flex; flex-direction: column; gap: 8px; }
+    .trivia-btn { padding: 10px 14px; background: white; border: 1px solid var(--maroon); border-radius: 6px; font-weight: 600; color: var(--maroon); cursor: pointer; text-align: left; transition: all 0.2s ease; }
+    .trivia-btn:hover { background: var(--maroon); color: white; }
+
+    /* STAGE 1: Swipe Wordsearch */
+    #stageWordSearch { display: none; }
+    .wordsearch-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; max-width: 460px; margin: 0 auto 24px; touch-action: none; }
+    .letter-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.05rem; background: var(--card-white); border: 1px solid var(--border-light); border-radius: 6px; cursor: pointer; color: var(--dark-maroon); transition: background 0.2s ease, transform 0.1s ease; }
+    .letter-cell.selected { background: var(--maroon); color: white; transform: scale(1.15); box-shadow: 0 4px 12px rgba(107, 13, 24, 0.4); z-index: 5; position: relative; }
+    .letter-cell.found { background: var(--deep-crimson); color: white; border-color: var(--dark-maroon); transform: scale(1); z-index: 1; }
+
+    .words-target-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+    .word-badge { padding: 6px 14px; background: var(--card-white); border: 1px dashed var(--maroon); border-radius: 20px; font-weight: 600; font-size: 0.85rem; color: var(--maroon); transition: all 0.3s ease; }
+    .word-badge.found { background: var(--maroon); color: white; border-style: solid; text-decoration: line-through; }
+
+    /* STAGE 2: Unscramble */
+    .arrange-container { display: none; flex-direction: column; align-items: center; gap: 20px; }
+    .word-slots-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 50px; padding: 10px; width: 100%; border-bottom: 2px dashed var(--maroon); margin-bottom: 15px; }
+    .word-chip { padding: 10px 18px; background: var(--maroon); color: white; font-weight: 700; border-radius: 6px; cursor: pointer; transition: transform 0.2s ease; }
+    .word-chip:hover { transform: translateY(-2deg); }
+    .available-words { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+    .btn-action { margin-top: 15px; padding: 12px 28px; background: var(--dark-maroon); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* STAGE 3: Gift Box Reveal */
+    .reveal-container { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px 0 60px; }
+    .gift-box-wrapper { position: relative; width: 140px; height: 140px; margin: 80px auto 20px; cursor: pointer; }
+    .gift-box-body { width: 100%; height: 100px; background: var(--maroon); position: absolute; bottom: 0; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .gift-lid { width: 110%; height: 30px; background: var(--deep-crimson); position: absolute; top: 15px; left: -5%; border-radius: 6px; transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 2; }
+    .light-glow { position: absolute; width: 180px; height: 180px; top: -20px; left: -20px; background: radial-gradient(circle, rgba(255,223,0,0.9) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
+    .pizza-slice { position: absolute; font-size: 5rem; top: 20px; left: 25px; opacity: 0; transform: translateY(20px) scale(0.3); transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 3; }
+
+    .gift-box-wrapper.opened .gift-lid { transform: translateY(-60px) rotate(-20deg); }
+    .gift-box-wrapper.opened .light-glow { opacity: 1; }
+    .gift-box-wrapper.opened .pizza-slice { opacity: 1; transform: translateY(-75px) scale(1.4); }
+
+    /* STAGE 4: Digital Wish Wall Section */
+    .wish-board-section { display: none; margin-top: 40px; text-align: left; }
+    .wish-input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .wish-input { flex: 1; padding: 12px; border: 1px solid var(--maroon); border-radius: 6px; font-family: inherit; outline: none; }
+    .corkboard { background: #EEDC82; border: 6px solid #8B4513; border-radius: 8px; padding: 20px; min-height: 200px; display: flex; flex-wrap: wrap; gap: 15px; align-content: flex-start; }
+    .sticky-note { background: #FFF4BD; width: 160px; height: 160px; padding: 15px; box-shadow: 3px 3px 10px rgba(0,0,0,0.15); font-family: 'Caveat', cursive; font-size: 1.4rem; color: #333; transform: rotate(-2deg); position: relative; display: flex; align-items: center; justify-content: center; text-align: center; word-break: break-word; }
+    .sticky-note:nth-child(even) { transform: rotate(3deg); background: #FFD1DC; }
+    .sticky-pin { width: 12px; height: 12px; background: var(--maroon); border-radius: 50%; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  </style>
+</head>
+<body>
+
+  <!-- Background Music Auto-player -->
+  <audio id="bgAudio" src="Water - Diljit Dosanjh.mp3" autoplay loop></audio>
+
+  <!-- Floating Chole Bhature Grid -->
+  <div class="bg-food-layer" id="bgFoodLayer"></div>
+
+  <div class="container">
+    <header>
+      <div class="vd-header-title">The Vampire Diaries • Mystic Falls Edition</div>
+      <h1 class="main-heading">Avika's 16th Birthday</h1>
+      <div class="sub-heading">Sweet Sixteen & Always Iconic</div>
+    </header>
+
+    <section class="photobooth-section">
+      <div class="photobooth-strip">
+        <img src="photo1.jpg" alt="Avika 1" class="photobooth-photo">
+        <img src="photo2.jpg" alt="Avika 2" class="photobooth-photo">
+        <img src="photo3.jpg" alt="Avika 3" class="photobooth-photo">
+        <img src="photo4.jpg" alt="Avika 4" class="photobooth-photo">
+        <div class="photobooth-footer">AVIKA • SWEET 16</div>
+      </div>
+    </section>
+
+    <!-- Experience Container -->
+    <section class="game-card">
+      
+      <!-- STAGE 0: Trivia Gatekeeper -->
+      <div id="stageTrivia" class="trivia-container">
+        <div class="game-title">Mystic Falls Security Check 🧛‍♂️</div>
+        <p class="game-instruction">Answer these 3 quick questions to prove you're ready for Avika's Sweet 16!</p>
+
+        <div class="trivia-box">
+          <div class="trivia-question" id="tQText">1. Who is the superior Salvatore brother?</div>
+          <div class="trivia-options" id="tOptions">
+            <button class="trivia-btn" onclick="answerTrivia(true)">Damon Salvatore (Obviously)</button>
+            <button class="trivia-btn" onclick="answerTrivia(false)">Stefan Salvatore</button>
+            <button class="trivia-btn" onclick="answerTrivia(false)">Matt Donovan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 1: Word Search -->
+      <div id="stageWordSearch">
+        <div class="game-title">Word Search Challenge 🔍</div>
+        <p class="game-instruction"><b>Swipe (tap & drag)</b> across the letters to find the hidden words!</p>
+        
+        <div class="wordsearch-grid" id="gridContainer"></div>
+
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark-maroon);">WORDS TO FIND:</div>
+        <div class="words-target-list" id="targetWordsList">
+          <span class="word-badge" id="badge-AVIKA">AVIKA</span>
+          <span class="word-badge" id="badge-IS">IS</span>
+          <span class="word-badge" id="badge-PUNJABI">PUNJABI</span>
+          <span class="word-badge" id="badge-IFYKYK">IFYKYK</span>
+        </div>
+      </div>
+
+      <!-- STAGE 2: Unscramble Words -->
+      <div id="stageArrange" class="arrange-container">
+        <div class="game-title">Unscramble the Sentence 🧩</div>
+        <p class="game-instruction">Click the words below in the correct order!</p>
+        
+        <div class="word-slots-container" id="sentenceSlots"></div>
+        <div class="available-words" id="availableWordsContainer"></div>
+
+        <div>
+          <button class="btn-action" style="background: #999;" onclick="resetArrange()">Reset</button>
+          <button class="btn-action" onclick="checkSentence()">Submit Order</button>
+        </div>
+      </div>
+
+      <!-- STAGE 3: Pizza Gift Box Reveal -->
+      <div id="stageGift" class="reveal-container">
+        <div class="game-title">You Solved It! 🎉</div>
+        <p class="game-instruction">Tap the gift box to claim Avika's slice!</p>
+
+        <div class="gift-box-wrapper" id="giftBox" onclick="openGift()">
+          <div class="light-glow"></div>
+          <div class="pizza-slice">🍕</div>
+          <div class="gift-lid"></div>
+          <div class="gift-box-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 4: Digital Wish Wall (Appears after solving) -->
+    <section class="wish-board-section" id="wishBoardSection">
+      <div class="game-title" style="text-align: center;">Avika's Sweet 16 Wish Wall 📌</div>
+      <p class="game-instruction" style="text-align: center;">Leave a birthday note to pin on the board!</p>
+      
+      <div class="wish-input-group">
+        <input type="text" id="wishInput" class="wish-input" placeholder="Type a message or memory for Avika..." maxlength="60">
+        <button class="btn-action" style="margin-top:0;" onclick="addWishNote()">Pin Note</button>
+      </div>
+
+      <div class="corkboard" id="corkboard">
+        <div class="sticky-note">
+          <div class="sticky-pin"></div>
+          Happy Sweet 16 Avika! ✨
+        </div>
+        <div class="sticky-note">
+          <div class="sticky-pin"></div>
+          Iconic energy only! 👑
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Audio Fallback
+    document.body.addEventListener('click', function initAudio() {
+        const audio = document.getElementById('bgAudio');
+        if (audio.paused) { audio.play().catch(e => console.log("Audio play prevented:", e)); }
+        document.body.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    // Floating Chole Bhature Grid
+    const foodLayer = document.getElementById('bgFoodLayer');
+    const svgCholeBhatura = `
+      <svg viewBox="0 0 100 100" width="100%" height="100%">
+        <ellipse cx="45" cy="45" rx="35" ry="28" fill="#F4C430" stroke="#6B0D18" stroke-width="3" transform="rotate(-10 45 45)"/>
+        <ellipse cx="42" cy="42" rx="25" ry="18" fill="#FDEE87" opacity="0.6"/>
+        <circle cx="72" cy="70" r="20" fill="#6B0D18"/>
+        <circle cx="72" cy="70" r="16" fill="#8C1C2B"/>
+        <circle cx="68" cy="66" r="3" fill="#D97706"/>
+        <circle cx="75" cy="72" r="3.5" fill="#D97706"/>
+        <circle cx="71" cy="75" r="2.5" fill="#D97706"/>
+      </svg>
+    `;
+    const cols = 4, rows = 4;
+    const cellW = 100 / cols, cellH = 100 / rows;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        let top = (r * cellH) + (Math.random() * (cellH - 12)); 
+        let left = (c * cellW) + (Math.random() * (cellW - 12));
+        const el = document.createElement('div');
+        el.className = 'chole-bhatura-item';
+        el.innerHTML = svgCholeBhatura;
+        el.style.top = top + '%';
+        el.style.left = left + '%';
+        el.addEventListener('click', (e) => {
+          confetti({ particleCount: 15, spread: 40, origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight } });
+        });
+        foodLayer.appendChild(el);
+      }
+    }
+
+    // --- STAGE 0: Trivia Logic ---
+    let triviaStep = 0;
+    const triviaQuestions = [
+      { q: "1. Who is the superior Salvatore brother?", opts: ["Damon Salvatore (Obviously)", "Stefan Salvatore", "Matt Donovan"], correct: 0 },
+      { q: "2. What is essential fuel for Avika's survival?", opts: ["Salad", "Chole Bhature & Pizza", "Plain Water"], correct: 1 },
+      { q: "3. What level milestone is Avika unlocking today?", opts: ["Level 10", "Level 16 (Sweet Sixteen)", "Level 21"], correct: 1 }
+    ];
+
+    function answerTrivia(isCorrect) {
+      if (isCorrect || triviaStep > 0) { 
+        triviaStep++;
+        if (triviaStep < triviaQuestions.length) {
+          loadTriviaQuestion();
+        } else {
+          document.getElementById('stageTrivia').style.display = 'none';
+          document.getElementById('stageWordSearch').style.display = 'block';
+          confetti({ particleCount: 50, spread: 60 });
+        }
+      } else {
+        alert("Incorrect! Mystic Falls security denies that answer. Try again! 😉");
+      }
+    }
+
+    function loadTriviaQuestion() {
+      const current = triviaQuestions[triviaStep];
+      document.getElementById('tQText').innerText = current.q;
+      const optsContainer = document.getElementById('tOptions');
+      optsContainer.innerHTML = '';
+      current.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'trivia-btn';
+        btn.innerText = opt;
+        btn.onclick = () => answerTrivia(idx === current.correct);
+        optsContainer.appendChild(btn);
+      });
+    }
+
+    // --- STAGE 1: Swipe Word Search Logic ---
+    const gridData = [
+      ['A','X','Y','T','R','W','Q','M','N','B','V','C'], 
+      ['L','V','O','P','Z','X','C','V','B','N','M','K'], 
+      ['J','H','I','G','F','D','S','A','Q','W','I','R'], 
+      ['T','Y','U','K','I','O','P','L','K','J','F','G'], 
+      ['F','D','S','A','A','Z','X','C','V','B','Y','N'], 
+      ['M','K','J','H','G','F','D','S','A','Q','K','W'], 
+      ['E','I','R','T','Y','U','I','O','P','L','Y','K'], 
+      ['J','H','S','F','G','D','S','A','Q','W','K','R'], 
+      ['Z','X','P','U','N','J','A','B','I','M','N','B'], 
+      ['V','C','X','Z','A','S','D','F','G','H','J','K'], 
+      ['L','P','O','I','U','Y','T','R','E','W','Q','A'], 
+      ['S','D','F','G','H','J','K','L','Z','X','C','V']  
+    ];
+    const targetWords = {
+      'AVIKA': [[0,0],[1,1],[2,2],[3,3],[4,4]],
+      'PUNJABI': [[8,2],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8]],
+      'IFYKYK': [[2,10],[3,10],[4,10],[5,10],[6,10],[7,10]],
+      'IS': [[6,1],[7,2]]
+    };
+
+    let isDragging = false, startCell = null, currentPath = [], foundWordsCount = 0;
+    const gridContainer = document.getElementById('gridContainer');
+
+    gridData.forEach((row, r) => {
+      row.forEach((char, c) => {
+        const cell = document.createElement('div');
+        cell.className = 'letter-cell';
+        cell.innerText = char;
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        gridContainer.appendChild(cell);
+      });
+    });
+
+    gridContainer.addEventListener('mousedown', dragStart);
+    gridContainer.addEventListener('touchstart', dragStart, { passive: false });
+    window.addEventListener('mousemove', dragMove, { passive: false });
+    window.addEventListener('touchmove', dragMove, { passive: false });
+    window.addEventListener('mouseup', dragEnd);
+    window.addEventListener('touchend', dragEnd);
+
+    function getCellFromEvent(e) {
+        if (e.touches && e.touches.length > 0) {
+            const touch = e.touches[0];
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (el && el.classList.contains('letter-cell')) return el;
+        } else {
+            const el = e.target;
+            if (el && el.classList.contains('letter-cell')) return el;
+        }
+        return null;
+    }
+
+    function dragStart(e) {
+        const cell = getCellFromEvent(e);
+        if (!cell) return;
+        if (e.cancelable) e.preventDefault();
+        isDragging = true;
+        startCell = { r: parseInt(cell.dataset.row), c: parseInt(cell.dataset.col) };
+        clearSelection();
+        if (!cell.classList.contains('found')) cell.classList.add('selected');
+        currentPath = [[startCell.r, startCell.c]];
+    }
+
+    function dragMove(e) {
+        if (!isDragging || !startCell) return;
+        if (e.cancelable) e.preventDefault();
+        const cell = getCellFromEvent(e);
+        if (!cell) return;
+        const coords = getLineCoords(startCell, { r: parseInt(cell.dataset.row), c: parseInt(cell.dataset.col) });
+        if (coords.length > 0) {
+            clearSelection();
+            coords.forEach(coord => {
+                const cellEl = document.querySelector(`.letter-cell[data-row="${coord[0]}"][data-col="${coord[1]}"]`);
+                if (cellEl && !cellEl.classList.contains('found')) cellEl.classList.add('selected');
+            });
+            currentPath = coords;
+        }
+    }
+
+    function dragEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        if (currentPath.length > 0) checkWordMatch(currentPath);
+        startCell = null; currentPath = [];
+    }
+
+    function clearSelection() {
+        document.querySelectorAll('.letter-cell.selected').forEach(c => c.classList.remove('selected'));
+    }
+
+    function getLineCoords(start, end) {
+       let coords = [], dr = end.r - start.r, dc = end.c - start.c, steps = Math.max(Math.abs(dr), Math.abs(dc));
+       if (steps === 0) return [[start.r, start.c]];
+       if (Math.abs(dr) !== 0 && Math.abs(dc) !== 0 && Math.abs(dr) !== Math.abs(dc)) return []; 
+       let rStep = dr === 0 ? 0 : (dr / steps), cStep = dc === 0 ? 0 : (dc / steps);
+       for (let i = 0; i <= steps; i++) coords.push([start.r + i * rStep, start.c + i * cStep]);
+       return coords;
+    }
+
+    function checkWordMatch(selectedCoords) {
+       let matched = false;
+       for (let word in targetWords) {
+          if (document.getElementById(`badge-${word}`).classList.contains('found')) continue;
+          let target = targetWords[word];
+          if (target.length === selectedCoords.length) {
+              let forwardMatch = target.every((t, i) => t[0] === selectedCoords[i][0] && t[1] === selectedCoords[i][1]);
+              let backwardMatch = target.every((t, i) => t[0] === selectedCoords[selectedCoords.length - 1 - i][0] && t[1] === selectedCoords[selectedCoords.length - 1 - i][1]);
+              if (forwardMatch || backwardMatch) {
+                  matched = true;
+                  selectedCoords.forEach(coord => {
+                      const cellEl = document.querySelector(`.letter-cell[data-row="${coord[0]}"][data-col="${coord[1]}"]`);
+                      cellEl.classList.remove('selected');
+                      cellEl.classList.add('found');
+                  });
+                  document.getElementById(`badge-${word}`).classList.add('found');
+                  foundWordsCount++;
+                  confetti({ particleCount: 40, spread: 50, colors: ['#6B0D18', '#8C1C2B'] });
+                  if (foundWordsCount === 4) setTimeout(transitionToArrangeStage, 1000);
+                  break;
+              }
+          }
+       }
+       if (!matched) {
+           setTimeout(() => { if (!isDragging) clearSelection(); }, 300);
+       }
+    }
+
+    // --- STAGE 2: Arrange Words Logic ---
+    const correctOrder = ["Avika", "is", "punjabi", "ifykyk"];
+    let shuffledWords = ["punjabi", "Avika", "ifykyk", "is"], userOrder = [];
+
+    function transitionToArrangeStage() {
+      document.getElementById('stageWordSearch').style.display = 'none';
+      document.getElementById('stageArrange').style.display = 'flex';
+      renderArrangeGame();
+    }
+
+    function renderArrangeGame() {
+      const slotsContainer = document.getElementById('sentenceSlots');
+      const availableContainer = document.getElementById('availableWordsContainer');
+      slotsContainer.innerHTML = ''; availableContainer.innerHTML = '';
+      userOrder.forEach((word, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'word-chip'; chip.innerText = word; chip.onclick = () => removeWord(idx);
+        slotsContainer.appendChild(chip);
+      });
+      shuffledWords.forEach((word, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'word-chip'; chip.innerText = word; chip.onclick = () => pickWord(idx);
+        availableContainer.appendChild(chip);
+      });
+    }
+
+    function pickWord(index) { userOrder.push(shuffledWords[index]); shuffledWords.splice(index, 1); renderArrangeGame(); }
+    function removeWord(index) { shuffledWords.push(userOrder[index]); userOrder.splice(index, 1); renderArrangeGame(); }
+    function resetArrange() { shuffledWords = ["punjabi", "Avika", "ifykyk", "is"]; userOrder = []; renderArrangeGame(); }
+
+    function checkSentence() {
+      if (userOrder.join(' ') === correctOrder.join(' ')) {
+        document.getElementById('stageArrange').style.display = 'none';
+        document.getElementById('stageGift').style.display = 'flex';
+        confetti({ particleCount: 70, spread: 70 });
+      } else {
+        alert("Not quite right! Try arranging the words again.");
+      }
+    }
+
+    // --- STAGE 3: Gift Box Reveal Logic ---
+    function openGift() {
+      const giftBox = document.getElementById('giftBox');
+      if (!giftBox.classList.contains('opened')) {
+        giftBox.classList.add('opened');
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#6B0D18', '#8C1C2B', '#FFD700', '#FFFFFF'] });
+        setTimeout(() => {
+          document.getElementById('wishBoardSection').style.display = 'block';
+        }, 800);
+      }
+    }
+
+    // --- STAGE 4: Persistent Wish Wall Logic (LocalStorage) ---
+    document.addEventListener("DOMContentLoaded", loadSavedWishes);
+
+    function addWishNote() {
+      const input = document.getElementById('wishInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      let savedWishes = JSON.parse(localStorage.getItem('avikaWishes') || '[]');
+      const randomRot = (Math.random() * 10) - 5;
+      const newWish = { text: text, rotation: randomRot };
+      
+      savedWishes.push(newWish);
+      localStorage.setItem('avikaWishes', JSON.stringify(savedWishes));
+
+      renderSingleWish(newWish);
+      input.value = '';
+      confetti({ particleCount: 20, spread: 30 });
+    }
+
+    function renderSingleWish(wishObj) {
+      const corkboard = document.getElementById('corkboard');
+      const note = document.createElement('div');
+      note.className = 'sticky-note';
+      note.style.transform = `rotate(${wishObj.rotation}deg)`;
+      note.innerHTML = `<div class="sticky-pin"></div>${wishObj.text}`;
+      corkboard.appendChild(note);
+    }
+
+    function loadSavedWishes() {
+      let savedWishes = JSON.parse(localStorage.getItem('avikaWishes') || '[]');
+      if(savedWishes.length > 0) {
+        savedWishes.forEach(wish => {
+          renderSingleWish(wish);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
