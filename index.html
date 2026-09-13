@@ -126,6 +126,62 @@
     .sticky-note:nth-child(even) { transform: rotate(3deg); background: #FFD1DC; }
     .sticky-pin { width: 12px; height: 12px; background: var(--maroon); border-radius: 50%; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
   </style>
+
+  <!-- Firebase SDKs & Config Integration -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQpw6aOuwJ7CsSM2dbrNadgOFaK7rB7oE",
+      authDomain: "avikawishwall.firebaseapp.com",
+      projectId: "avikawishwall",
+      storageBucket: "avikawishwall.firebasestorage.app",
+      messagingSenderId: "839249278573",
+      appId: "1:839249278573:web:bac2e366840b4cc400b164",
+      measurementId: "G-S43J28EBG2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Make addFirebaseWish globally available
+    window.addFirebaseWish = async function() {
+      const input = document.getElementById('wishInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const randomRot = (Math.random() * 10) - 5;
+      try {
+        await addDoc(collection(db, "wishes"), {
+          text: text,
+          rotation: randomRot,
+          timestamp: Date.now()
+        });
+        input.value = '';
+        confetti({ particleCount: 20, spread: 30 });
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    };
+
+    // Real-time listener for incoming notes from anyone anywhere
+    document.addEventListener("DOMContentLoaded", () => {
+      const q = query(collection(db, "wishes"), orderBy("timestamp", "asc"));
+      onSnapshot(q, (snapshot) => {
+        const corkboard = document.getElementById('corkboard');
+        corkboard.innerHTML = ''; // Clear board and re-render live list
+        snapshot.forEach((doc) => {
+          const wish = doc.data();
+          const note = document.createElement('div');
+          note.className = 'sticky-note';
+          note.style.transform = `rotate(${wish.rotation}deg)`;
+          note.innerHTML = `<div class="sticky-pin"></div>${wish.text}`;
+          corkboard.appendChild(note);
+        });
+      });
+    });
+  </script>
 </head>
 <body>
 
@@ -221,18 +277,11 @@
       
       <div class="wish-input-group">
         <input type="text" id="wishInput" class="wish-input" placeholder="Type a message or memory for Avika..." maxlength="60">
-        <button class="btn-action" style="margin-top:0;" onclick="addWishNote()">Pin Note</button>
+        <button class="btn-action" style="margin-top:0;" onclick="addFirebaseWish()">Pin Note</button>
       </div>
 
       <div class="corkboard" id="corkboard">
-        <div class="sticky-note">
-          <div class="sticky-pin"></div>
-          Happy Sweet 16 Avika! ✨
-        </div>
-        <div class="sticky-note">
-          <div class="sticky-pin"></div>
-          Iconic energy only! 👑
-        </div>
+        <!-- Live notes from Firebase load here automatically -->
       </div>
     </section>
   </div>
@@ -492,44 +541,6 @@
         setTimeout(() => {
           document.getElementById('wishBoardSection').style.display = 'block';
         }, 800);
-      }
-    }
-
-    // --- STAGE 4: Persistent Wish Wall Logic (LocalStorage) ---
-    document.addEventListener("DOMContentLoaded", loadSavedWishes);
-
-    function addWishNote() {
-      const input = document.getElementById('wishInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      let savedWishes = JSON.parse(localStorage.getItem('avikaWishes') || '[]');
-      const randomRot = (Math.random() * 10) - 5;
-      const newWish = { text: text, rotation: randomRot };
-      
-      savedWishes.push(newWish);
-      localStorage.setItem('avikaWishes', JSON.stringify(savedWishes));
-
-      renderSingleWish(newWish);
-      input.value = '';
-      confetti({ particleCount: 20, spread: 30 });
-    }
-
-    function renderSingleWish(wishObj) {
-      const corkboard = document.getElementById('corkboard');
-      const note = document.createElement('div');
-      note.className = 'sticky-note';
-      note.style.transform = `rotate(${wishObj.rotation}deg)`;
-      note.innerHTML = `<div class="sticky-pin"></div>${wishObj.text}`;
-      corkboard.appendChild(note);
-    }
-
-    function loadSavedWishes() {
-      let savedWishes = JSON.parse(localStorage.getItem('avikaWishes') || '[]');
-      if(savedWishes.length > 0) {
-        savedWishes.forEach(wish => {
-          renderSingleWish(wish);
-        });
       }
     }
   </script>
